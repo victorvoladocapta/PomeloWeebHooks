@@ -1,4 +1,5 @@
 # PomeloWeebHooks
+<<<<<<< HEAD
 
 Servicio independiente .NET 10 para recibir webhooks de Pomelo.
 
@@ -32,3 +33,6 @@ Para producción, suministra secretos mediante variables de entorno:
 - `Database__ApplyMigrationsOnStartup=true`
 
 Documentación: https://developers.pomelo.la/api-reference/cards/issuing/card-events
+=======
+Eventos donde pomelo nos avisa o nos timbra comportamientos de crédito
+>>>>>>> 108d6ae2adefdb132e2c733182846e9e94b55ef5

@@ -7,7 +7,8 @@ public sealed class PomeloCardEventService(IPomeloCardEventStore store)
 {
     private static readonly HashSet<string> SupportedEvents = new(StringComparer.OrdinalIgnoreCase)
     {
-        "CREATION", "ACTIVATION", "EMBOSSMENT", "BLOCK", "UNBLOCK", "DISABLEMENT",
+        "CREATION", "ACTIVATION", "EMBOSSMENT", "REPRINT_CREATION",
+        "REPRINT_ACTIVATION", "BLOCK", "UNBLOCK", "DISABLEMENT", "EXPIRATION",
     };
 
     public async Task<CardEventResult> ProcessAsync(string rawJson, CancellationToken cancellationToken)

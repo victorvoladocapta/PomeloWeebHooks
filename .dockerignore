@@ -1,0 +1,21 @@
+# Sin esto, el COPY del codigo mete el obj/ de la maquina de quien construye
+# dentro de la imagen. El project.assets.json que hay ahi apunta al cache de
+# NuGet del host, que en el contenedor no existe, y dotnet publish --no-restore
+# falla con NETSDK1064 diciendo que el paquete "was not found. It might have
+# been deleted since NuGet restore" -- un mensaje que describe cualquier cosa
+# menos la causa.
+**/.git
+**/.vs
+**/bin
+**/obj
+**/.nuget-packages
+**/publish
+
+.env
+*.user
+*.secrets.env
+appsettings.Development.json
+appsettings.Local.json
+
+# El servicio no ejecuta pruebas dentro de la imagen y no necesita el proyecto.
+tests/

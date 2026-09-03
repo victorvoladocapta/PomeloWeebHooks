@@ -7,7 +7,7 @@ namespace PomeloWeebHooks.API.Controllers;
 
 [ApiController]
 [AllowAnonymous]
-[Route("api/webhooks/pomelo/statements/created-summaries")]
+[Route("statements")]
 public sealed class PomeloStatementCreatedWebhookController(
     IPomeloWebhookVerifier verifier,
     PomeloStatementCreatedService service,

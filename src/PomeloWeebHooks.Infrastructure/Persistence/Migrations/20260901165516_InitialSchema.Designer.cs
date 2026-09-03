@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PomeloWeebHooks.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using PomeloWeebHooks.Infrastructure.Persistence;
 namespace PomeloWeebHooks.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WebhookDbContext))]
-    partial class WebhookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260901165516_InitialSchema")]
+    partial class InitialSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,83 +241,6 @@ namespace PomeloWeebHooks.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_pomelo_delinquency_event_user_id");
 
                     b.ToTable("pomelo_delinquency_event", "webhooks");
-                });
-
-            modelBuilder.Entity("PomeloWeebHooks.Core.Entities.PomeloInboundEvent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("EventId")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("event_id");
-
-                    b.Property<string>("IdempotencyKey")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("idempotency_key");
-
-                    b.Property<string>("Kind")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)")
-                        .HasColumnName("kind");
-
-                    b.Property<string>("PayloadJson")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("payload_json");
-
-                    b.Property<string>("PomeloUserId")
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("pomelo_user_id");
-
-                    b.Property<DateTimeOffset>("ProcessedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("processed_at");
-
-                    b.Property<DateTimeOffset>("ReceivedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("received_at");
-
-                    b.Property<string>("RelatedResourceId")
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("related_resource_id");
-
-                    b.Property<string>("ResourceId")
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("resource_id");
-
-                    b.Property<string>("Status")
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id")
-                        .HasName("pk_pomelo_inbound_event");
-
-                    b.HasIndex("PomeloUserId")
-                        .HasDatabaseName("ix_pomelo_inbound_event_pomelo_user_id");
-
-                    b.HasIndex("ReceivedAt")
-                        .HasDatabaseName("ix_pomelo_inbound_event_received_at");
-
-                    b.HasIndex("Kind", "IdempotencyKey")
-                        .IsUnique()
-                        .HasDatabaseName("ix_pomelo_inbound_event_kind_idempotency_key");
-
-                    b.HasIndex("Kind", "ResourceId")
-                        .HasDatabaseName("ix_pomelo_inbound_event_kind_resource_id");
-
-                    b.ToTable("pomelo_inbound_event", "webhooks");
                 });
 
             modelBuilder.Entity("PomeloWeebHooks.Core.Entities.PomeloProcessedTransactionEvent", b =>

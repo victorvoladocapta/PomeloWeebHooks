@@ -11,6 +11,7 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
     public DbSet<PomeloProcessedTransactionEvent> PomeloProcessedTransactionEvents => Set<PomeloProcessedTransactionEvent>();
     public DbSet<PomeloRevertedOperationEvent> PomeloRevertedOperationEvents => Set<PomeloRevertedOperationEvent>();
     public DbSet<PomeloDelinquencyEvent> PomeloDelinquencyEvents => Set<PomeloDelinquencyEvent>();
+    public DbSet<PomeloInboundEvent> PomeloInboundEvents => Set<PomeloInboundEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -123,6 +124,24 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
             entity.HasIndex(x => x.IdempotencyKey).IsUnique();
             entity.HasIndex(x => x.UserId);
             entity.HasIndex(x => x.CreditLineId);
+        });
+
+        modelBuilder.Entity<PomeloInboundEvent>(entity =>
+        {
+            entity.ToTable("pomelo_inbound_event", "webhooks");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Kind).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.EventId).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.IdempotencyKey).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.ResourceId).HasMaxLength(128);
+            entity.Property(x => x.RelatedResourceId).HasMaxLength(128);
+            entity.Property(x => x.PomeloUserId).HasMaxLength(128);
+            entity.Property(x => x.Status).HasMaxLength(128);
+            entity.Property(x => x.PayloadJson).HasColumnType("jsonb").IsRequired();
+            entity.HasIndex(x => new { x.Kind, x.IdempotencyKey }).IsUnique();
+            entity.HasIndex(x => new { x.Kind, x.ResourceId });
+            entity.HasIndex(x => x.PomeloUserId);
+            entity.HasIndex(x => x.ReceivedAt);
         });
     }
 }

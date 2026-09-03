@@ -5,7 +5,7 @@ using PomeloWeebHooks.Application.Security;
 
 namespace PomeloWeebHooks.API.Controllers;
 
-[ApiController, AllowAnonymous, Route("api/webhooks/pomelo/credit-lines/delinquency")]
+[ApiController, AllowAnonymous, Route("lending/v1/debt")]
 public sealed class PomeloDelinquencyWebhookController(
     IPomeloWebhookVerifier verifier, PomeloDelinquencyService service) : ControllerBase
 {

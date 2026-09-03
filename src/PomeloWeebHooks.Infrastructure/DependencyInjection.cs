@@ -8,6 +8,7 @@ using PomeloWeebHooks.Application.Transactions;
 using PomeloWeebHooks.Application.Operations;
 using PomeloWeebHooks.Application.Delinquency;
 using PomeloWeebHooks.Application.Security;
+using PomeloWeebHooks.Application.InboundEvents;
 using PomeloWeebHooks.Infrastructure.Persistence;
 using PomeloWeebHooks.Infrastructure.Pomelo;
 
@@ -32,6 +33,7 @@ public static class DependencyInjection
         services.AddScoped<IPomeloProcessedTransactionStore, PomeloProcessedTransactionStore>();
         services.AddScoped<IPomeloRevertedOperationStore, PomeloRevertedOperationStore>();
         services.AddScoped<IPomeloDelinquencyStore, PomeloDelinquencyStore>();
+        services.AddScoped<IPomeloInboundEventStore, PomeloInboundEventStore>();
         services.AddSingleton<IPomeloWebhookVerifier, PomeloWebhookVerifier>();
         return services;
     }

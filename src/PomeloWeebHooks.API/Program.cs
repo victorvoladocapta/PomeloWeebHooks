@@ -1,12 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using PomeloWeebHooks.Application.CardEvents;
+using PomeloWeebHooks.Application.Chargebacks;
 using PomeloWeebHooks.Application.CreditLineStatus;
-using PomeloWeebHooks.Application.Statements;
-using PomeloWeebHooks.Application.Transactions;
-using PomeloWeebHooks.Application.Operations;
 using PomeloWeebHooks.Application.Delinquency;
 using PomeloWeebHooks.Application.InboundEvents;
+using PomeloWeebHooks.Application.InterestCharges;
+using PomeloWeebHooks.Application.Operations;
+using PomeloWeebHooks.Application.Presentments;
+using PomeloWeebHooks.Application.Shipping;
+using PomeloWeebHooks.Application.Statements;
+using PomeloWeebHooks.Application.TransactionNotifications;
+using PomeloWeebHooks.Application.Transactions;
+using PomeloWeebHooks.Application.UserStatus;
 using PomeloWeebHooks.Infrastructure;
 using PomeloWeebHooks.Infrastructure.Configuration;
 using PomeloWeebHooks.Infrastructure.Persistence;
@@ -35,6 +41,13 @@ builder.Services.AddScoped<PomeloProcessedTransactionService>();
 builder.Services.AddScoped<PomeloRevertedOperationService>();
 builder.Services.AddScoped<PomeloDelinquencyService>();
 builder.Services.AddScoped<PomeloInboundEventService>();
+builder.Services.AddScoped<PomeloTransactionNotificationService>();
+builder.Services.AddScoped<PomeloPresentmentService>();
+builder.Services.AddScoped<PomeloStatementOpenedService>();
+builder.Services.AddScoped<PomeloInterestChargeService>();
+builder.Services.AddScoped<PomeloUserStatusService>();
+builder.Services.AddScoped<PomeloShippingService>();
+builder.Services.AddScoped<PomeloChargebackService>();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 // The verifier fails closed, which is right, but it fails closed one request at

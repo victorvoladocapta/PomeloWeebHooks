@@ -21,4 +21,7 @@ public sealed class PomeloProcessedTransactionEvent
     public string PayloadJson { get; set; } = "{}";
     public DateTimeOffset ReceivedAt { get; set; }
     public DateTimeOffset ProcessedAt { get; set; }
+    public PomeloProductStatus ProductStatus { get; set; } = PomeloProductStatus.Pending;
+    public DateTimeOffset? ProductProcessedAt { get; set; }
+    public string? ProductError { get; set; }
 }

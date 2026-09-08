@@ -21,4 +21,7 @@ public sealed class PomeloCardEvent
     public PomeloCardEventStatus Status { get; set; } = PomeloCardEventStatus.Received;
     public DateTimeOffset ReceivedAt { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset? ProcessedAt { get; set; }
+    public PomeloProductStatus ProductStatus { get; set; } = PomeloProductStatus.Pending;
+    public DateTimeOffset? ProductProcessedAt { get; set; }
+    public string? ProductError { get; set; }
 }

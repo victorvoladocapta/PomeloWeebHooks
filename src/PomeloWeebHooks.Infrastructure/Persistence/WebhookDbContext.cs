@@ -12,11 +12,23 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
     public DbSet<PomeloRevertedOperationEvent> PomeloRevertedOperationEvents => Set<PomeloRevertedOperationEvent>();
     public DbSet<PomeloDelinquencyEvent> PomeloDelinquencyEvents => Set<PomeloDelinquencyEvent>();
     public DbSet<PomeloInboundEvent> PomeloInboundEvents => Set<PomeloInboundEvent>();
+    public DbSet<PomeloTransactionNotificationEvent> PomeloTransactionNotificationEvents => Set<PomeloTransactionNotificationEvent>();
+    public DbSet<PomeloPresentmentEvent> PomeloPresentmentEvents => Set<PomeloPresentmentEvent>();
+    public DbSet<PomeloStatementOpenedEvent> PomeloStatementOpenedEvents => Set<PomeloStatementOpenedEvent>();
+    public DbSet<PomeloInterestChargeEvent> PomeloInterestChargeEvents => Set<PomeloInterestChargeEvent>();
+    public DbSet<PomeloUserStatusEvent> PomeloUserStatusEvents => Set<PomeloUserStatusEvent>();
     public DbSet<PomeloShippingEvent> PomeloShippingEvents => Set<PomeloShippingEvent>();
     public DbSet<PomeloChargebackEvent> PomeloChargebackEvents => Set<PomeloChargebackEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        void MapProduct(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder entity)
+        {
+            entity.Property("ProductStatus").HasConversion<string>().HasMaxLength(32).IsRequired();
+            entity.Property("ProductError").HasMaxLength(1024);
+            entity.HasIndex("ProductStatus");
+        }
+
         modelBuilder.Entity<PomeloCardEvent>(entity =>
         {
             entity.ToTable("pomelo_card_event", "webhooks");
@@ -33,6 +45,7 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
             entity.HasIndex(x => x.IdempotencyKey).IsUnique();
             entity.HasIndex(x => x.PomeloCardId);
             entity.HasIndex(x => x.ReceivedAt);
+            MapProduct(entity);
         });
 
         modelBuilder.Entity<PomeloCreditLineStatusEvent>(entity =>
@@ -48,6 +61,7 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
             entity.HasIndex(x => x.IdempotencyKey).IsUnique();
             entity.HasIndex(x => x.CreditLineId);
             entity.HasIndex(x => x.ReceivedAt);
+            MapProduct(entity);
         });
 
         modelBuilder.Entity<PomeloStatementCreatedEvent>(entity =>
@@ -62,6 +76,7 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
             entity.HasIndex(x => x.IdempotencyKey).IsUnique();
             entity.HasIndex(x => x.StatementId);
             entity.HasIndex(x => x.CreditLineId);
+            MapProduct(entity);
         });
 
         modelBuilder.Entity<PomeloProcessedTransactionEvent>(entity =>
@@ -87,6 +102,7 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
             entity.HasIndex(x => x.IdempotencyKey).IsUnique();
             entity.HasIndex(x => x.TransactionId);
             entity.HasIndex(x => x.CreditLineId);
+            MapProduct(entity);
         });
 
         modelBuilder.Entity<PomeloRevertedOperationEvent>(entity =>
@@ -111,6 +127,7 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
             entity.HasIndex(x => x.IdempotencyKey).IsUnique();
             entity.HasIndex(x => x.OperationId);
             entity.HasIndex(x => x.CreditLineId);
+            MapProduct(entity);
         });
 
         modelBuilder.Entity<PomeloDelinquencyEvent>(entity =>
@@ -126,6 +143,94 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
             entity.HasIndex(x => x.IdempotencyKey).IsUnique();
             entity.HasIndex(x => x.UserId);
             entity.HasIndex(x => x.CreditLineId);
+            MapProduct(entity);
+        });
+
+        modelBuilder.Entity<PomeloTransactionNotificationEvent>(entity =>
+        {
+            entity.ToTable("pomelo_transaction_notification_event", "webhooks");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.IdempotencyKey).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.EventId).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.Variant).HasMaxLength(16).IsRequired();
+            entity.Property(x => x.TransactionId).HasMaxLength(128);
+            entity.Property(x => x.Status).HasMaxLength(64);
+            entity.Property(x => x.StatusDetail).HasMaxLength(128);
+            entity.Property(x => x.PomeloUserId).HasMaxLength(128);
+            entity.Property(x => x.PomeloCardId).HasMaxLength(128);
+            entity.Property(x => x.MerchantName).HasMaxLength(256);
+            entity.Property(x => x.LocalAmountTotal).HasMaxLength(64);
+            entity.Property(x => x.LocalAmountCurrency).HasMaxLength(8);
+            entity.Property(x => x.PayloadJson).HasColumnType("jsonb").IsRequired();
+            entity.HasIndex(x => x.IdempotencyKey).IsUnique();
+            MapProduct(entity);
+        });
+
+        modelBuilder.Entity<PomeloPresentmentEvent>(entity =>
+        {
+            entity.ToTable("pomelo_presentment_event", "webhooks");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.IdempotencyKey).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.EventId).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.PresentmentId).HasMaxLength(128);
+            entity.Property(x => x.Status).HasMaxLength(64);
+            entity.Property(x => x.PomeloUserId).HasMaxLength(128);
+            entity.Property(x => x.PomeloCardId).HasMaxLength(128);
+            entity.Property(x => x.OriginalTransactionId).HasMaxLength(128);
+            entity.Property(x => x.AmountTotal).HasMaxLength(64);
+            entity.Property(x => x.AmountCurrency).HasMaxLength(8);
+            entity.Property(x => x.PayloadJson).HasColumnType("jsonb").IsRequired();
+            entity.HasIndex(x => x.IdempotencyKey).IsUnique();
+            MapProduct(entity);
+        });
+
+        modelBuilder.Entity<PomeloStatementOpenedEvent>(entity =>
+        {
+            entity.ToTable("pomelo_statement_opened_event", "webhooks");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.IdempotencyKey).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.EventId).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.StatementId).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.CreditLineId).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.StartDate).HasMaxLength(32);
+            entity.Property(x => x.ClosingDate).HasMaxLength(32);
+            entity.Property(x => x.PayloadJson).HasColumnType("jsonb").IsRequired();
+            entity.HasIndex(x => x.IdempotencyKey).IsUnique();
+            MapProduct(entity);
+        });
+
+        modelBuilder.Entity<PomeloInterestChargeEvent>(entity =>
+        {
+            entity.ToTable("pomelo_interest_charge_event", "webhooks");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.IdempotencyKey).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.EventId).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.InterestId).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.PomeloUserId).HasMaxLength(128);
+            entity.Property(x => x.CreditLineId).HasMaxLength(128);
+            entity.Property(x => x.DebtId).HasMaxLength(128);
+            entity.Property(x => x.Origin).HasMaxLength(64);
+            entity.Property(x => x.Type).HasMaxLength(64);
+            entity.Property(x => x.AmountTotal).HasMaxLength(64);
+            entity.Property(x => x.AmountCurrency).HasMaxLength(8);
+            entity.Property(x => x.EffectiveAt).HasMaxLength(64);
+            entity.Property(x => x.PayloadJson).HasColumnType("jsonb").IsRequired();
+            entity.HasIndex(x => x.IdempotencyKey).IsUnique();
+            MapProduct(entity);
+        });
+
+        modelBuilder.Entity<PomeloUserStatusEvent>(entity =>
+        {
+            entity.ToTable("pomelo_user_status_event", "webhooks");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.IdempotencyKey).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.EventId).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.PomeloUserId).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.UserStatus).HasMaxLength(64);
+            entity.Property(x => x.UserStatusReason).HasMaxLength(128);
+            entity.Property(x => x.PayloadJson).HasColumnType("jsonb").IsRequired();
+            entity.HasIndex(x => x.IdempotencyKey).IsUnique();
+            MapProduct(entity);
         });
 
         modelBuilder.Entity<PomeloInboundEvent>(entity =>

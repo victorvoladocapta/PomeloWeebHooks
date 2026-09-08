@@ -2,13 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PomeloWeebHooks.Application.CardEvents;
+using PomeloWeebHooks.Application.Chargebacks;
 using PomeloWeebHooks.Application.CreditLineStatus;
+using PomeloWeebHooks.Application.Delinquency;
+using PomeloWeebHooks.Application.InboundEvents;
+using PomeloWeebHooks.Application.Operations;
+using PomeloWeebHooks.Application.Security;
+using PomeloWeebHooks.Application.Shipping;
 using PomeloWeebHooks.Application.Statements;
 using PomeloWeebHooks.Application.Transactions;
-using PomeloWeebHooks.Application.Operations;
-using PomeloWeebHooks.Application.Delinquency;
-using PomeloWeebHooks.Application.Security;
-using PomeloWeebHooks.Application.InboundEvents;
 using PomeloWeebHooks.Infrastructure.Persistence;
 using PomeloWeebHooks.Infrastructure.Pomelo;
 
@@ -34,6 +36,8 @@ public static class DependencyInjection
         services.AddScoped<IPomeloRevertedOperationStore, PomeloRevertedOperationStore>();
         services.AddScoped<IPomeloDelinquencyStore, PomeloDelinquencyStore>();
         services.AddScoped<IPomeloInboundEventStore, PomeloInboundEventStore>();
+        services.AddScoped<IPomeloShippingStore, PomeloShippingStore>();
+        services.AddScoped<IPomeloChargebackStore, PomeloChargebackStore>();
         services.AddSingleton<IPomeloWebhookVerifier, PomeloWebhookVerifier>();
         return services;
     }

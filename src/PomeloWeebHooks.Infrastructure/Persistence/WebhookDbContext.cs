@@ -12,6 +12,8 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
     public DbSet<PomeloRevertedOperationEvent> PomeloRevertedOperationEvents => Set<PomeloRevertedOperationEvent>();
     public DbSet<PomeloDelinquencyEvent> PomeloDelinquencyEvents => Set<PomeloDelinquencyEvent>();
     public DbSet<PomeloInboundEvent> PomeloInboundEvents => Set<PomeloInboundEvent>();
+    public DbSet<PomeloShippingEvent> PomeloShippingEvents => Set<PomeloShippingEvent>();
+    public DbSet<PomeloChargebackEvent> PomeloChargebackEvents => Set<PomeloChargebackEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -142,6 +144,44 @@ public sealed class WebhookDbContext(DbContextOptions<WebhookDbContext> options)
             entity.HasIndex(x => new { x.Kind, x.ResourceId });
             entity.HasIndex(x => x.PomeloUserId);
             entity.HasIndex(x => x.ReceivedAt);
+        });
+
+        modelBuilder.Entity<PomeloShippingEvent>(entity =>
+        {
+            entity.ToTable("pomelo_shipping_event", "webhooks");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.IdempotencyKey).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.EventId).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.ShipmentId).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.Status).HasMaxLength(64);
+            entity.Property(x => x.StatusDetail).HasMaxLength(128);
+            entity.Property(x => x.RequestStatus).HasMaxLength(64);
+            entity.Property(x => x.PayloadJson).HasColumnType("jsonb").IsRequired();
+            entity.Property(x => x.ProductStatus).HasConversion<string>().HasMaxLength(32).IsRequired();
+            entity.Property(x => x.ProductError).HasMaxLength(1024);
+            entity.HasIndex(x => x.IdempotencyKey).IsUnique();
+            entity.HasIndex(x => x.ShipmentId);
+            entity.HasIndex(x => x.ProductStatus);
+        });
+
+        modelBuilder.Entity<PomeloChargebackEvent>(entity =>
+        {
+            entity.ToTable("pomelo_chargeback_event", "webhooks");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.IdempotencyKey).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.EventId).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.ChargebackId).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.TransactionId).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.Status).HasMaxLength(64);
+            entity.Property(x => x.StatusTicket).HasMaxLength(64);
+            entity.Property(x => x.Amount).HasMaxLength(64);
+            entity.Property(x => x.Currency).HasMaxLength(8);
+            entity.Property(x => x.PayloadJson).HasColumnType("jsonb").IsRequired();
+            entity.Property(x => x.ProductStatus).HasConversion<string>().HasMaxLength(32).IsRequired();
+            entity.Property(x => x.ProductError).HasMaxLength(1024);
+            entity.HasIndex(x => x.IdempotencyKey).IsUnique();
+            entity.HasIndex(x => x.TransactionId);
+            entity.HasIndex(x => x.ProductStatus);
         });
     }
 }

@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/PomeloWeebHooks.Core/PomeloWeebHooks.Core.csproj" />
+  <Project Path="src/PomeloWeebHooks.Application/PomeloWeebHooks.Application.csproj" />
+  <Project Path="src/PomeloWeebHooks.Infrastructure/PomeloWeebHooks.Infrastructure.csproj" />
+  <Project Path="src/PomeloWeebHooks.API/PomeloWeebHooks.API.csproj" />
+  <Project Path="tests/PomeloWeebHooks.Tests/PomeloWeebHooks.Tests.csproj" />
+</Solution>

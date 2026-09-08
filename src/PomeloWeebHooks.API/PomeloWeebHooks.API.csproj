@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>PomeloWeebHooks-Development</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Solo para las herramientas de linea de comandos de EF. PrivateAssets
+         all hace que no viaje en la publicacion ni en la imagen. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PomeloWeebHooks.Application\PomeloWeebHooks.Application.csproj" />
+    <ProjectReference Include="..\PomeloWeebHooks.Infrastructure\PomeloWeebHooks.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

@@ -11,6 +11,8 @@ public sealed class WebhookRouteTests
     [InlineData(typeof(PomeloProcessedTransactionsWebhookController), "api/webhooks/pomelo/lending/transactions")]
     [InlineData(typeof(PomeloRevertedOperationsWebhookController), "api/webhooks/pomelo/reverted-operations")]
     [InlineData(typeof(PomeloDelinquencyWebhookController), "lending/v1/debt")]
+    [InlineData(typeof(PomeloShippingWebhookController), "api/webhooks/pomelo/shipping/updates")]
+    [InlineData(typeof(PomeloChargebackWebhookController), "api/webhooks/pomelo/chargebacks")]
     public void Lending_webhook_exposes_expected_route(Type controllerType, string expected)
     {
         var route = controllerType.GetCustomAttributes(typeof(RouteAttribute), inherit: true)
